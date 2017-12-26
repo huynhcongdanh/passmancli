@@ -68,6 +68,8 @@ class PassmanApi(object):
     endpoint = "v2/vaults/{}".format(self._get_vault_guid(guid))
     #get raw response
     raw = self._send_request("get", endpoint).json()
+    #remove/hide test key for vault
+    self._remove_test_key(raw)
     #remove/hide deleted credential from the response
     self._remove_deleted_creds(raw)
     #convert epoch time
@@ -98,6 +100,9 @@ class PassmanApi(object):
         if field in self.DATE_FIELDS:
           if value != 0:
             credential[field] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(value)))
+
+  def _remove_test_key(self,response):
+    response["credentials"] = [c for c in response["credentials"] if "Test key for vault" not in c['label']]
 
   def _remove_deleted_creds(self,response):
     response["credentials"] = [c for c in response["credentials"] if c['delete_time'] == 0]
