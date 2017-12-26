@@ -18,7 +18,8 @@ class PassmanApi(object):
 
   ENCRYPTED_VAULT_FIELDS = [u"description", u"username", u"password", u"files",
                             u"custom_fields", u"otp", u"email", u"tags", u"url"]
-  DATE_FIELDS = [u"created", u"last_access", u"changed", u"expire_time", u"delete_time"]
+  DATE_FIELDS = [u"created", u"last_access", u"changed", u"expire_time", u"delete_time", u"sharing_keys_generated"]
+  UNWANTED_FIELDS = [u"vault_settings", u"public_sharing_key", u"private_sharing_key", u"icon"]
 
   def __init__(self, base_url, server_key, auth):
     self.base_url = base_url
@@ -70,6 +71,8 @@ class PassmanApi(object):
     raw = self._send_request("get", endpoint).json()
     #remove/hide test key for vault
     self._remove_test_key(raw)
+    #remove/hide unwanted fields
+    self._remove_unwanted_fields(raw)
     #remove/hide deleted credential from the response
     self._remove_deleted_creds(raw)
     #convert epoch time
@@ -103,6 +106,15 @@ class PassmanApi(object):
 
   def _remove_test_key(self,response):
     response["credentials"] = [c for c in response["credentials"] if "Test key for vault" not in c['label']]
+
+  def _remove_unwanted_fields(self,response):
+    for field, value in response.items():
+      if field in self.UNWANTED_FIELDS:
+        del response[field]
+    for credential in response["credentials"]:
+      for field, value in credential.items():
+        if field in self.UNWANTED_FIELDS:
+          del credential[field]
 
   def _remove_deleted_creds(self,response):
     response["credentials"] = [c for c in response["credentials"] if c['delete_time'] == 0]
