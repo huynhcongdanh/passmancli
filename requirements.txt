@@ -1,3 +1,7 @@
 wheel>=0.22
 pytest
 ConfigParser
+click
+requests
+pygments
+sjcl

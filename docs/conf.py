@@ -222,8 +222,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'passmancli', u'passmancli Documentation',
-     [u'Danh Huynh'], 1)
+  ('index', 'passmancli', u'passmancli Documentation',
+  [u'Danh Huynh'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -237,8 +237,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'passmancli', u'passmancli Documentation',
-   u'Danh Huynh', 'passmancli', 'One line description of project.',
-   'Miscellaneous'),
+  u'Danh Huynh', 'passmancli', 'One line description of project.',
+  'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

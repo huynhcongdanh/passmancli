@@ -1,7 +1,7 @@
 .. :changelog:
 
 Changelog for passmancli
--------------------------
+------------------------
 
 0.1.0 (Danh Huynh)
 ++++++++++++++++++
