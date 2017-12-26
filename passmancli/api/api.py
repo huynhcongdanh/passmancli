@@ -81,9 +81,16 @@ class PassmanApi(object):
 
   def _format_vault_time(self, response):
     for vault in response:
-      vault.update((k, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(v)))) for k, v in vault.iteritems() if k in self.DATE_FIELDS)
+      vault.update((k, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(v))))
+                   for k, v in vault.iteritems() if k in self.DATE_FIELDS)
 
   def _format_cred_time(self, response):
+    #update current vault
+    for field, value in response.items():
+      if field in self.DATE_FIELDS:
+        if value != 0:
+          response[field] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(value)))
+    #update creds
     for credential in response["credentials"]:
       for field, value in credential.items():
         if field in self.DATE_FIELDS:
@@ -128,7 +135,8 @@ class PassmanApi(object):
 
 
 class Credential(object):
-  def __init__(self, guid, vaultId, userId, label, description, created, changed, tags, email, username, password, url, favicon, renewInterval, expireTime, deleteTime, files, customFields, otp, hidden, sharedKey):
+  def __init__(self, guid, vaultId, userId, label, description, created, changed, tags, email, username, password, url,
+               favicon, renewInterval, expireTime, deleteTime, files, customFields, otp, hidden, sharedKey):
     self.guid = guid
     self.vaultId = vaultId
     self.userId=  userId
