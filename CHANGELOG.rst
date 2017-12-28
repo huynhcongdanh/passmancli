@@ -3,6 +3,12 @@
 Changelog for passmancli
 ------------------------
 
+0.2.1 (Danh Huynh) - In progress
+++++++++++++++++++++++++++++++++
+
+* Add option to search and get selected credentials in the target vault
+* Remove unimplemented credential CLI options (new and update)
+
 0.2.0 (Danh Huynh)
 ++++++++++++++++++
 

@@ -23,6 +23,7 @@ class PassmanApi(object):
   UNWANTED_FIELDS        = [u"vault_settings", u"public_sharing_key", u"private_sharing_key",
                             u"icon", u"delete_time", u"hidden", u"vault_id", u"renew_interval",
                             u"otp", u"credential_id", u"challenge_password"]
+  SEARCH_FIELDS          = [u"label", u"tags", u"username", u"description", u"email", u"url"]
 
   def __init__(self, base_url, user, password, vault_password):
     self.base_url       = base_url
@@ -56,7 +57,7 @@ class PassmanApi(object):
         if "delete_request_pending" in field and not value:
           del vault[field]
     #format json response
-    json_vaults = json.dumps(vaults, indent=4, sort_keys=True)
+    json_vaults = json.dumps(vaults, indent=2, sort_keys=True)
     response = highlight(json_vaults, JsonLexer(), TerminalFormatter())
     return response
 
@@ -65,7 +66,7 @@ class PassmanApi(object):
     #get raw response
     return self._send_request("get", endpoint).json()
 
-  def _get_vault_guid(self,input):
+  def _get_vault_guid(self, input):
     vaults = self._get_vaults()
     #by the default, let guid be user input
     guid   = input
@@ -75,6 +76,18 @@ class PassmanApi(object):
         if field == "name" and value == input:
           guid = vault["guid"]
     return guid
+
+  def _get_cred_guids(self, vault, input):
+    endpoint = "v2/vaults/{}".format(self._get_vault_guid(vault))
+    current_vault = self._send_request("get", endpoint).json()
+    guid_list   = []
+    #check the user input and get guid if matches
+    for credential in current_vault["credentials"]:
+      for field, value in credential.items():
+        if field in self.SEARCH_FIELDS and input.lower() in value.lower() and credential["delete_time"] == 0:
+          guid_list.append(credential["guid"])
+          break
+    return guid_list
 
   def get_vault(self, guid):
     endpoint = "v2/vaults/{}".format(self._get_vault_guid(guid))
@@ -90,11 +103,34 @@ class PassmanApi(object):
     self._remove_unwanted_fields(vault)
     #decrypt values
     self._get_decrypted_response(vault, self.vault_password)
-
     #format json response
-    json_vault = json.dumps(vault, indent=4, sort_keys=False)
+    json_vault = json.dumps(vault, indent=2, sort_keys=False)
     response = highlight(json_vault, JsonLexer(), TerminalFormatter())
     return response
+
+  def get_credential(self, vault, guid):
+    cred_list = []
+    guid_list = self._get_cred_guids(vault, guid)
+    if guid_list:
+      for guid in guid_list:
+        endpoint = "v2/credentials/{}".format(guid)
+        cred     = self._send_request("get", endpoint).json()
+        #cleanup and decrypt creds
+        for field, value in cred.items():
+          if field in self.UNWANTED_FIELDS:
+            del cred[field]
+          if field in self.DATE_FIELDS and value != 0:
+            cred[field] = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.localtime(int(value)))
+          if field in self.ENCRYPTED_VAULT_FIELDS:
+            text = self._get_decrypted_text(value, self.vault_password)
+            if field in self.JSON_FIELDS:
+              text = json.loads(text)
+            cred[field] = text
+        cred_list.append(cred)
+    #format json response
+    cred_list = json.dumps(cred_list, indent=4, sort_keys=False)
+    cred_list = highlight(cred_list, JsonLexer(), TerminalFormatter())
+    return cred_list
 
   def _format_vault_time(self, vaults):
     for vault in vaults:
@@ -104,14 +140,12 @@ class PassmanApi(object):
   def _format_cred_time(self, vault):
     #update current vault
     for field, value in vault.items():
-      if field in self.DATE_FIELDS:
-        if value != 0:
+      if field in self.DATE_FIELDS and value != 0:
           vault[field] = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.localtime(int(value)))
     #update creds
     for credential in vault["credentials"]:
       for field, value in credential.items():
-        if field in self.DATE_FIELDS:
-          if value != 0:
+        if field in self.DATE_FIELDS and value != 0:
             credential[field] = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.localtime(int(value)))
 
   def _remove_test_key(self,vault):
