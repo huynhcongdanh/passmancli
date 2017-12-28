@@ -8,10 +8,11 @@ def entry_point(ctx):
 
 @entry_point.command("get")
 @click.option("--vault", "-v", required=True, help="Specify vault of the credential")
+@click.option("--keys", "-k", required=False, help="Filter the result by list of comma separated keys")
 @click.argument("guid")
 @click.pass_context
-def get_credential(ctx, vault, guid):
-  print ctx.obj["passman"].get_credential(vault, guid)
+def get_credential(ctx, vault, guid, keys=None):
+  print ctx.obj["passman"].get_credential(vault, guid, keys)
 
 
 #@entry_point.command("new")

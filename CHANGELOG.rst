@@ -6,6 +6,7 @@ Changelog for passmancli
 0.2.1 (Danh Huynh) - In progress
 ++++++++++++++++++++++++++++++++
 
+* Add option to filter the credential result by list of comma separated keys
 * Add option to search and get selected credentials in the target vault
 * Remove unimplemented credential CLI options (new and update)
 

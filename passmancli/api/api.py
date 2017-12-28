@@ -25,6 +25,8 @@ class PassmanApi(object):
                             u"otp", u"credential_id", u"challenge_password"]
   SEARCH_FIELDS          = [u"label", u"tags", u"username", u"description", u"email", u"url"]
 
+  DEFAULT_FIELDS         = [u"label"]
+
   def __init__(self, base_url, user, password, vault_password):
     self.base_url       = base_url
     self.user           = user
@@ -108,7 +110,7 @@ class PassmanApi(object):
     response = highlight(json_vault, JsonLexer(), TerminalFormatter())
     return response
 
-  def get_credential(self, vault, guid):
+  def get_credential(self, vault, guid, keys):
     cred_list = []
     guid_list = self._get_cred_guids(vault, guid)
     if guid_list:
@@ -117,11 +119,13 @@ class PassmanApi(object):
         cred     = self._send_request("get", endpoint).json()
         #cleanup and decrypt creds
         for field, value in cred.items():
-          if field in self.UNWANTED_FIELDS:
+          if keys != None and field not in keys.split(',') and field not in self.DEFAULT_FIELDS:
             del cred[field]
-          if field in self.DATE_FIELDS and value != 0:
+          elif field in self.UNWANTED_FIELDS:
+            del cred[field]
+          elif field in self.DATE_FIELDS and value != 0:
             cred[field] = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.localtime(int(value)))
-          if field in self.ENCRYPTED_VAULT_FIELDS:
+          elif field in self.ENCRYPTED_VAULT_FIELDS:
             text = self._get_decrypted_text(value, self.vault_password)
             if field in self.JSON_FIELDS:
               text = json.loads(text)
