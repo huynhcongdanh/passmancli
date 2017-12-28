@@ -2,7 +2,7 @@ import os.path
 
 def find_config(config):
   #set some default paths to get Passman client configuration
-  config_files = ["passmancli", "~/.config/passmancli"]
+  config_files = [".passmancli", "~/.config/.passmancli"]
   #If there is config override, don't read Passman client configuration
   if config:
     return config

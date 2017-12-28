@@ -9,11 +9,12 @@ from passmancli.config import find_config
 #Create CLI options
 @click.group()
 @click.option("--config", "-c", type=click.Path(),  help="Path to Passman client config file")
+@click.option("--vault_password", "-p", required=False, help="Specify vault password if different than login password")
 @click.version_option(version=None)
 @click.pass_context
 
 #Config entrypoint for CLI
-def entrypoint(ctx, config):
+def entrypoint(ctx, config, vault_password):
   #check if config file is found or specified
   config_file = find_config(config)
   if config_file:
@@ -23,14 +24,16 @@ def entrypoint(ctx, config):
     except Exception as e :
       print(str(e))
     try:
-      base_url   = cfg.get('passman', 'base_url')
-      server_key = cfg.get('passman', 'server_key')
-      user       = cfg.get('passman', 'user')
-      password   = cfg.get('passman', 'password')
+      base_url     = cfg.get('passman', 'base_url')
+      user         = cfg.get('passman', 'user')
+      password     = cfg.get('passman', 'password')
     except Exception as e :
-      print(str(e),' could not read configuration file')
+      print(str(e),' could not read configuration file or missing values')
+    #check if vault password is specified
+    if not vault_password:
+      vault_password = password
     #load the configs
-    ctx.obj["passman"] = PassmanApi(base_url, server_key, (user, password))
+    ctx.obj["passman"] = PassmanApi(base_url, user, password, vault_password)
   else:
     print('Passman configuration file is not found or specified')
 

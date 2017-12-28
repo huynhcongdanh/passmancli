@@ -7,7 +7,6 @@ from pygments.lexers import JsonLexer
 from pygments.formatters import TerminalFormatter
 
 import base64
-import hmac,hashlib
 from sjcl import SJCL
 
 
@@ -16,19 +15,23 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class PassmanApi(object):
 
-  ENCRYPTED_VAULT_FIELDS = [u"description", u"username", u"password", u"files",
-                            u"custom_fields", u"otp", u"email", u"tags", u"url"]
-  DATE_FIELDS = [u"created", u"last_access", u"changed", u"expire_time", u"delete_time", u"sharing_keys_generated"]
-  UNWANTED_FIELDS = [u"vault_settings", u"public_sharing_key", u"private_sharing_key",u"icon", u"delete_time",
-                     u"hidden", u"vault_id", u"renew_interval", u"otp", u"credential_id"]
+  ENCRYPTED_VAULT_FIELDS = [u"description", u"username", u"password", u"otp", u"files",
+                            u"custom_fields", u"email", u"tags", u"url"]
+  JSON_FIELDS            = [u"tags", u"custom_fields"]
+  DATE_FIELDS            = [u"created", u"last_access", u"changed", u"expire_time",
+                            u"delete_time", u"sharing_keys_generated"]
+  UNWANTED_FIELDS        = [u"vault_settings", u"public_sharing_key", u"private_sharing_key",
+                            u"icon", u"delete_time", u"hidden", u"vault_id", u"renew_interval",
+                            u"otp", u"credential_id", u"challenge_password"]
 
-  def __init__(self, base_url, server_key, auth):
-    self.base_url = base_url
-    self.server_key = server_key
-    self.auth = auth
+  def __init__(self, base_url, user, password, vault_password):
+    self.base_url       = base_url
+    self.user           = user
+    self.password       = password
+    self.vault_password = vault_password
     self._auth_headers = {
       "Authorization": "Basic {}".format(
-        base64.b64encode(":".join(auth))
+        base64.b64encode(self.user + ":" + self.password)
       )
     }
 
@@ -73,7 +76,7 @@ class PassmanApi(object):
           guid = vault["guid"]
     return guid
 
-  def get_vault(self, guid, decrypt=False, key=None):
+  def get_vault(self, guid):
     endpoint = "v2/vaults/{}".format(self._get_vault_guid(guid))
     #get raw response
     vault = self._send_request("get", endpoint).json()
@@ -86,8 +89,7 @@ class PassmanApi(object):
     #remove/hide unwanted fields
     self._remove_unwanted_fields(vault)
     #decrypt values
-    if decrypt and key:
-      self._get_decrypted_response(vault)
+    self._get_decrypted_response(vault, self.vault_password)
 
     #format json response
     json_vault = json.dumps(vault, indent=4, sort_keys=False)
@@ -130,31 +132,18 @@ class PassmanApi(object):
   def _remove_deleted_creds(self, vault):
     vault["credentials"] = [c for c in vault["credentials"] if c["delete_time"] == 0]
 
-  def _get_decrypted_response(self, vault):
+  def _get_decrypted_response(self, vault, vault_password):
     for credential in vault["credentials"]:
       for field, value in credential.items():
         if field in self.ENCRYPTED_VAULT_FIELDS:
-          #get key to decrypt
-          key = self._get_key_from_cred(credential)
-          credential[field] = self._get_decrypted_cred(value,key)
+          text = self._get_decrypted_text(value, vault_password)
+          if field in self.JSON_FIELDS:
+            text = json.loads(text)
+          credential[field] = text
 
-  def _get_key_from_cred(self, credential):
-    user_shared_key    = credential["shared_key"]
-    user_supplied_key  = str(credential["label"]).encode("utf-8")
-    user_key           = str(credential["user_id"]).encode("utf-8")
-    server_key         = self.server_key.encode("utf-8")
-    if user_shared_key is not None:
-      user_key = str(user_shared_key).encode("utf-8")
-    key = hmac.new(server_key, user_key, hashlib.sha512).hexdigest()
-    key = hmac.new(user_supplied_key, key, hashlib.sha512).hexdigest()
-    return key
-
-  def _get_decrypted_cred(self, ciphertext, key):
-    print key
-    print ciphertext
-    data = eval(base64.b64decode(ciphertext.encode("utf-8")))
-    print data
-    return SJCL().decrypt(data)
+  def _get_decrypted_text(self, ciphertext, key):
+    data = eval(base64.b64decode(ciphertext))
+    return SJCL().decrypt(data, key).strip('"')
 
   def new_credential(self, **data):
     endpoint = "v2/credentials"

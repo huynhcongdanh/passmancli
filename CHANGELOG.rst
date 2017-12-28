@@ -3,6 +3,18 @@
 Changelog for passmancli
 ------------------------
 
+0.2.0 (Danh Huynh)
+++++++++++++++++++
+
+* Decrypt vault and credentials successfully.
+* Change default config file to .passmancli or ~/.config/.passmancli
+* Hide some unwanted fields in the result for better visual
+* Hide test key for vault in the result
+* Hide deleted credentials in the result
+* Fix epoch time display in get vault
+* Cleaning up and styling
+
+
 0.1.0 (Danh Huynh)
 ++++++++++++++++++
 
