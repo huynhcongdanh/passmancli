@@ -84,7 +84,7 @@ class PassmanApi(object):
         self._format_cred_time(cred)
         self._clean_cred(cred, keys)
       #decrypt values
-      self._get_decrypted_response(vault, self.vault_password)
+      self._get_decrypted_response(vault)
       #format json response
       vault = self._format_json(vault)
       return vault
@@ -100,7 +100,7 @@ class PassmanApi(object):
         cred     = self._send_request("get", endpoint).json()
         self._clean_cred(cred, keys)
         self._format_cred_time(cred)
-        self._decrypt_cred(cred)
+        self._get_decrypted_cred(cred)
         cred_list.append(cred)
       cred_list = self._format_json(cred_list)
       return cred_list
@@ -148,14 +148,6 @@ class PassmanApi(object):
     else:
       return None
 
-  def _decrypt_cred(self, cred):
-    for field, value in cred.items():
-      if field in self.ENCRYPTED_VAULT_FIELDS:
-        text = self._get_decrypted_text(value, self.vault_password)
-        if field in self.JSON_FIELDS:
-          text = json.loads(text)
-        cred[field] = text
-
   def _clean_cred(self, cred, keys):
     for field, value in cred.items():
       if keys != None and field not in keys.split(',') and field not in self.DEFAULT_FIELDS:
@@ -173,11 +165,24 @@ class PassmanApi(object):
     json_data = highlight(json_data, JsonLexer(), TerminalFormatter())
     return json_data
 
-  def _get_decrypted_response(self, vault, vault_password):
+  def _get_decrypted_response(self, vault):
     for cred in vault["credentials"]:
+      self._get_decrypted_cred(cred)
+
+  def _get_decrypted_cred(self, cred):
+    if not cred["shared_key"]:
       for field, value in cred.items():
         if field in self.ENCRYPTED_VAULT_FIELDS:
-          text = self._get_decrypted_text(value, vault_password)
+          text = self._get_decrypted_text(value, self.vault_password)
+          if field in self.JSON_FIELDS:
+            text = json.loads(text)
+          cred[field] = text
+    else:
+      shared_key = self._get_decrypted_text(cred["shared_key"], self.vault_password)
+      cred["shared_key"] = shared_key
+      for field, value in cred.items():
+        if field in self.ENCRYPTED_VAULT_FIELDS:
+          text = self._get_decrypted_text(value, shared_key)
           if field in self.JSON_FIELDS:
             text = json.loads(text)
           cred[field] = text
