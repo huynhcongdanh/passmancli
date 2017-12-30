@@ -46,6 +46,7 @@ pip uninstall passmancli
 
 To learn more about the usage please run `passman --help`.
 ```bash
+passman --help
 Usage: passman [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -56,6 +57,30 @@ Options:
   --help                     Show this message and exit.
 
 Commands:
-  credential
+  cred
   vault
+
+
+passman vault --help
+Usage: passman vault [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  show
+  list
+ 
+
+passman cred --help
+Usage: passman cred [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  show
+  create
+  update
+  
 ```

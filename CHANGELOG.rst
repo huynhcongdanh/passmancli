@@ -3,6 +3,14 @@
 Changelog for passmancli
 ------------------------
 
+0.2.2 (Danh Huynh)
+++++++++++++++++++
+
+* Refactor and cleanup codes
+* Enable credential CLI option (new and update).
+* Create new credential works using the cread_cred.json template
+
+
 0.2.1 (Danh Huynh)
 ++++++++++++++++++
 

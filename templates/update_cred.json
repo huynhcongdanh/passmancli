@@ -1,0 +1,9 @@
+{
+  "vault_id": 1,
+  "label": "updated_label",
+  "description": "updated_description",
+  "email": "generic@aligntech.com",
+  "username": "updated_user",
+  "password": "updated_pass",
+  "url": "updated_url"
+}

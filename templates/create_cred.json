@@ -1,0 +1,26 @@
+{
+  "vault_id": 1,
+  "label": "a_label",
+  "description": "a_description",
+  "created": null,
+  "changed": null,
+  "tags": [
+    {
+      "type": "generic"
+    },
+    {
+      "environment": "QAS"
+    }
+  ],
+  "email": "generic@aligntech.com",
+  "username": "a_user",
+  "password": "a_pass",
+  "url": "a_url",
+  "renew_interval": 0,
+  "expire_time": 0,
+  "delete_time": 0,
+  "files": null,
+  "custom_fields": null,
+  "otp": "",
+  "hidden": false
+}

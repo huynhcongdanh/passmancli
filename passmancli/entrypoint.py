@@ -2,7 +2,7 @@ import click
 import ConfigParser
 import os
 
-from passmancli.cli import vault, credential
+from passmancli.cli import vault, cred
 from passmancli.api import PassmanApi
 from passmancli.config import find_config
 
@@ -39,7 +39,7 @@ def entrypoint(ctx, config, vault_password):
 
 def main():
   entrypoint.add_command(vault.entry_point)
-  entrypoint.add_command(credential.entry_point)
+  entrypoint.add_command(cred.entry_point)
   entrypoint(obj={})
 
 
