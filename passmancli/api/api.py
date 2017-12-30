@@ -117,6 +117,11 @@ class PassmanApi(object):
     cred = self._send_request("patch", endpoint, data=json.loads(open(data).read())).json()
     return self._format_json(cred)
 
+  def delete_credential(self, guid):
+    endpoint = "v2/credentials/{}".format(guid)
+    cred = self._send_request("delete", endpoint).json()
+    return self._format_json(cred)
+
   def _get_vaults(self):
     endpoint = "v2/vaults"
     return self._send_request("get", endpoint).json()

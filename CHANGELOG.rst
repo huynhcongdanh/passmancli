@@ -6,6 +6,8 @@ Changelog for passmancli
 0.2.2 (Danh Huynh)
 ++++++++++++++++++
 
+* Add CLI option to delete credential by guid
+* Fix: shared credential use different key to decrypt ciphertext
 * Refactor and cleanup codes
 * Enable credential CLI option (new and update).
 * Create new credential works using the cread_cred.json template

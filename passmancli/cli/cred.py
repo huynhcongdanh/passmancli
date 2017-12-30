@@ -28,8 +28,8 @@ def new_credential(ctx, data):
 def update_credential(ctx, guid, data):
   print ctx.obj["passman"].update_credential(guid, data)
 
-#@entry_point.command("delete")
-#@click.argument("guid")
-#@click.pass_context
-#def update_credential(ctx, guid):
-#  print ctx.obj["passman"].delete_credential(guid)
+@entry_point.command("delete")
+@click.argument("guid")
+@click.pass_context
+def update_credential(ctx, guid):
+  print ctx.obj["passman"].delete_credential(guid)

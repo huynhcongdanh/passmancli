@@ -82,5 +82,6 @@ Commands:
   show
   create
   update
+  delete
   
 ```
