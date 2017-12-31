@@ -20,9 +20,9 @@ passman --version
 ## Post-Installation: Config File (Required)
 
 PassmanCLI requires a [ConfigParser] config file to save the base url of the instance as well as your username and password. You can send a path to the config file using the `--config` option of the command-line. 
-By the default, it looks for a config named `.passmancli` at the current working dir and at `~/.config/`, in this exact order.
+By the default, it looks for a config named `.passmancli` at the current working dir or at `~/.passman/active`, in this exact order.
 
-Here's an example of configuration: `~/.config/.passmancli`
+Here's an example of configuration: `~/.config/active`
 
 ```ConfigParser
 base_url = "https://my.nextcloud/apps/passman/api/"
@@ -30,10 +30,27 @@ user = username
 password = password
 ```
 
+## Switch between multiple Passman accounts
+
+PassmanCLI allow you to switch between accounts using `passman block [user]` command.
+
+You will need to create the config file for each user account under `~/.passman/`
+
+For example if you have your personal account `userA` and your team account `teamB`, and you have created 2 config files `~/.passman/userA` and `~/.passman/teamB` you can switch between them by:
+
+`passman block userA`
+
+or
+
+`passman block teamB`
+
+The command will make softlink `~/.passman/active` to the current active user config file.
+
 ## Uninstallation
 
 ```bash
 pip uninstall passmancli
+rm -rf /usr/local/bin/passman
 ```
 
 ## Development
@@ -46,6 +63,7 @@ pip uninstall passmancli
 
 To learn more about the usage please run `passman --help`.
 ```bash
+#--------------------------------------------------#  
 passman --help
 Usage: passman [OPTIONS] COMMAND [ARGS]...
 
@@ -57,10 +75,18 @@ Options:
   --help                     Show this message and exit.
 
 Commands:
+  block
   cred
   vault
+  
+#--------------------------------------------------#  
+passman block --help
+Usage: passman block [OPTIONS] USER
 
-
+Options:
+  --help  Show this message and exit.
+  
+#--------------------------------------------------#  
 passman vault --help
 Usage: passman vault [OPTIONS] COMMAND [ARGS]...
 
@@ -71,7 +97,7 @@ Commands:
   show
   list
  
-
+#--------------------------------------------------#  
 passman cred --help
 Usage: passman cred [OPTIONS] COMMAND [ARGS]...
 

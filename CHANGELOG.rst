@@ -6,6 +6,7 @@ Changelog for passmancli
 0.2.2 (Danh Huynh)
 ++++++++++++++++++
 
+* Add CLI command to switch between different Passman accounts
 * Add CLI option to delete credential by guid
 * Fix: shared credential use different key to decrypt ciphertext
 * Refactor and cleanup codes

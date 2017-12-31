@@ -2,7 +2,7 @@ import click
 import ConfigParser
 import os
 
-from passmancli.cli import vault, cred
+from passmancli.cli import block, vault, cred
 from passmancli.api import PassmanApi
 from passmancli.config import find_config
 
@@ -38,6 +38,7 @@ def entrypoint(ctx, config, vault_password):
     print('Passman configuration file is not found or specified')
 
 def main():
+  entrypoint.add_command(block.entry_point)
   entrypoint.add_command(vault.entry_point)
   entrypoint.add_command(cred.entry_point)
   entrypoint(obj={})
