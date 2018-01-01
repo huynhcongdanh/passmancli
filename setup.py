@@ -19,10 +19,11 @@ Documentation
 
 The full documentation is at https://github.com/huynhcongdanh/passmancli/blob/master/README.md """
 history = open('CHANGELOG.rst').read().replace('.. :changelog:', '')
+ver = open('VERSION.rst').read()
 
 setup(
   name='passmancli',
-  version=open('VERSION.rst').read(),
+  version= ver,
   description='NextCloud/OwnCloud Passman CLI. A folk of Douglas Camata original work at https://github.com/douglascamata/passmancli',
   long_description=readme + '\n\n' + doclink + '\n\n' + history,
   author='Danh Huynh',
