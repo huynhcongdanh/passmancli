@@ -98,9 +98,9 @@ class PassmanApi(object):
       for guid in guid_list:
         endpoint = "v2/credentials/{}".format(guid)
         cred     = self._send_request("get", endpoint).json()
-        self._clean_cred(cred, keys)
         self._format_cred_time(cred)
         self._get_decrypted_cred(cred)
+        self._clean_cred(cred, keys)
         cred_list.append(cred)
       cred_list = self._format_json(cred_list)
       return cred_list
