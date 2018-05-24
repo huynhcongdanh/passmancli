@@ -6,7 +6,7 @@ import os
 def entry_point(user):
   CONFIG_DIR  = "~/.passman/"
   CONFIG_FILE = "active"
-  print CONFIG_DIR + user
+  print(CONFIG_DIR + user)
   if os.path.islink(os.path.expanduser(CONFIG_DIR + CONFIG_FILE)) \
       or os.path.isfile(os.path.expanduser(CONFIG_DIR + CONFIG_FILE)):
     os.unlink(os.path.expanduser(CONFIG_DIR + CONFIG_FILE))

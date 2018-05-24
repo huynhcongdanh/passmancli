@@ -1,9 +1,13 @@
 import click
-import ConfigParser
 import os
 
+try:
+  import configparser as ConfigParser
+except ImportError:
+  import ConfigParser
+
 from passmancli.cli import block, vault, cred
-from passmancli.api import PassmanApi
+from passmancli.api import api
 from passmancli.config import find_config
 
 #Create CLI options
@@ -33,7 +37,7 @@ def entrypoint(ctx, config, vault_password):
     if not vault_password:
       vault_password = password
     #load the configs
-    ctx.obj["passman"] = PassmanApi(base_url, user, password, vault_password)
+    ctx.obj["passman"] = api.PassmanApi(base_url, user, password, vault_password)
   else:
     print('Passman configuration file is not found or specified')
 
@@ -42,7 +46,6 @@ def main():
   entrypoint.add_command(vault.entry_point)
   entrypoint.add_command(cred.entry_point)
   entrypoint(obj={})
-
 
 if __name__ == '__main__':
   main()

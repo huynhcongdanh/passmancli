@@ -9,6 +9,9 @@ from sjcl import SJCL
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 class PassmanApi(object):
 
   ENCRYPTED_VAULT_FIELDS = [u"description", u"username", u"password", u"otp", u"files",
@@ -29,7 +32,7 @@ class PassmanApi(object):
     self.vault_password = vault_password
     self._auth_headers  = {
       "Authorization": "Basic {}".format(
-        base64.b64encode(self.user + ":" + self.password)
+        base64.b64encode((self.user + ":" + self.password).encode())
       )
     }
 

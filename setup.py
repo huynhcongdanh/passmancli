@@ -39,7 +39,8 @@ setup(
   install_requires=[
     "requests",
     "pycryptodome",
-    "sjcl"
+    "sjcl",
+    "pygments"
   ],
   dependency_links=[
     "https://github.com/arnuschky/sjcl/tarball/master#egg=sjcl"
@@ -55,8 +56,6 @@ setup(
     'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: Implementation :: PyPy',
   ],
 )

@@ -1,6 +1,7 @@
 wheel>=0.22
 pytest
 ConfigParser
+configparser
 click
 requests
 pygments

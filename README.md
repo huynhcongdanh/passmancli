@@ -4,6 +4,8 @@
 
 This CLI is used to access encrypted data from a [Passman](https://github.com/nextcloud/passman) instance.
 
+Currently only support Python2!
+
 **Credit**: This is a folk of [Douglas Camata]'s original work at https://github.com/douglascamata/passman_cli . The original project provided a good Python framework that I would like to reuse and improve based upon personal needs. 
 
 ## Installation
@@ -12,7 +14,7 @@ git clone https://github.com/huynhcongdanh/passmancli.git
 
 cd passmancli
 
-python setup.py install
+python2 setup.py install
 
 passman --version
 ```
@@ -49,7 +51,7 @@ The command will make softlink `~/.passman/active` to the current active user co
 ## Uninstallation
 
 ```bash
-pip uninstall passmancli
+pip2 uninstall passmancli
 rm -rf /usr/local/bin/passman
 ```
 
