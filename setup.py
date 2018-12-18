@@ -40,7 +40,14 @@ setup(
     "requests",
     "pycryptodome",
     "sjcl",
-    "pygments"
+    "pygments",
+    "click",
+    "wheel>=0.22",
+    "pytest",
+    "ConfigParser",
+    "configparser",
+    "requests",
+    "sjcl"
   ],
   dependency_links=[
     "https://github.com/arnuschky/sjcl/tarball/master#egg=sjcl"

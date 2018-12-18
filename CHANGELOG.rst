@@ -3,6 +3,20 @@
 Changelog for passmancli
 ------------------------
 
+0.2.4 (Danh Huynh)
+++++++++++++++++++
+
+* Look for default config
+* Update requirements
+* Add docker support
+* Update Readme and Changelogs
+
+0.2.3 (Danh Huynh)
+++++++++++++++++++
+
+* Update print syntax
+* Currently only support Python2
+
 0.2.2 (Danh Huynh)
 ++++++++++++++++++
 

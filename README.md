@@ -61,6 +61,17 @@ rm -rf /usr/local/bin/passman
 2. Install the development requirements: `pip install -r requirements.txt`
 3. (Optional) Install the egg in `develop` mode: `python setup.py develop`
 
+## Run from Docker
+Note: Please make sure that you have the default config file at ~/.passman/default. If your config is 
+different, just need to adjust the docker run command
+```bash
+docker build -t passmancli .
+
+docker run --rm -v ~/.passman:/config passmancli:latest cred show a_credential -v a_vault
+
+```
+
+
 ## Usage
 
 To learn more about the usage please run `passman --help`.
